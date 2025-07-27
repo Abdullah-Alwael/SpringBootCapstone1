@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/product/")
@@ -20,6 +17,7 @@ public class ProductController {
 
     private final ProductService productService; // no need to use the new word, Spring handles it in the container
 
+    @PostMapping("/add")
     public ResponseEntity<?> addProduct(@Valid @RequestBody Product product, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
@@ -30,10 +28,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("product was added Successfully"));
     }
 
+    @GetMapping("/list")
     public ResponseEntity<?> getProducts() {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProducts());
     }
 
+    @PutMapping("/update/{productID}")
     public ResponseEntity<?> updateProduct(@PathVariable String productID,
                                            @Valid @RequestBody Product product, Errors errors) {
         if (errors.hasErrors()) {
@@ -47,6 +47,7 @@ public class ProductController {
         }
     }
 
+    @DeleteMapping("/delete/{productID}")
     public ResponseEntity<?> deleteProduct(@PathVariable String productID) {
         if (productService.deleteProduct(productID)) {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("product deleted Successfully"));
