@@ -25,8 +25,12 @@ public class MerchantStockController {
                     ApiResponse(errors.getFieldError().getDefaultMessage()));
         }
 
-        merchantStockService.addMerchantStock(merchantStock);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("merchantStock was added Successfully"));
+        if (merchantStockService.addMerchantStock(merchantStock)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("merchantStock was added Successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
+                    ApiResponse("Error, either productID, MerchantID, or both do not exist"));
+        }
     }
 
     @GetMapping("/list")
@@ -44,7 +48,8 @@ public class MerchantStockController {
         if (merchantStockService.updateMerchantStock(merchantStockID, merchantStock)) {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("merchantStock updated Successfully"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error, not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
+                    ApiResponse("Error, some or all of merchantStockID, productID, MerchantID are not found"));
         }
     }
 
