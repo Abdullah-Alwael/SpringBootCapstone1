@@ -26,6 +26,9 @@ public class ProductService {
     }
 
     public boolean updateProduct(String productID, Product product) {
+        if (!categoryService.checkAvailableCategory(product.getCategoryID())){
+            return false; // return false if the new category id does not exist
+        }
         for (Product p : products) {
             if (p.getId().equals(productID)) {
                 products.set(products.indexOf(p), product);

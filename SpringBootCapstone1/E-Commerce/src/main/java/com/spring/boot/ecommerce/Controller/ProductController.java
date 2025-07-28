@@ -46,7 +46,8 @@ public class ProductController {
         if (productService.updateProduct(productID, product)) {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("product updated Successfully"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error, not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
+                    ApiResponse("Error, either productID or categoryID not found"));
         }
     }
 
