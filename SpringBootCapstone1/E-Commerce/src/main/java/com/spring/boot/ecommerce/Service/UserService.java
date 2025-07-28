@@ -26,7 +26,7 @@ public class UserService {
             }
         }
 
-        return null;
+        return null; // user not found
     }
 
     public boolean updateUser(String userID, User user) {

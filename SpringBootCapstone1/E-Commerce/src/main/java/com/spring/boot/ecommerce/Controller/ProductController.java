@@ -2,6 +2,7 @@ package com.spring.boot.ecommerce.Controller;
 
 import com.spring.boot.ecommerce.Api.ApiResponse;
 import com.spring.boot.ecommerce.Model.Product;
+import com.spring.boot.ecommerce.Model.User;
 import com.spring.boot.ecommerce.Service.ProductService;
 import com.spring.boot.ecommerce.Service.UserService;
 import jakarta.validation.Valid;
@@ -101,13 +102,18 @@ public class ProductController {
     // return order history string to enable front-end filtering of the next end point
     @GetMapping("/user-order-history/{userID}")
     public ResponseEntity<?> getUserOrderHistory(@PathVariable String userID) {
+        if (!userService.checkAvailableUser(userID)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
+                    ApiResponse("Error the user does not exist"));
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(new
                 ApiResponse(userService.getUser(userID).getOrderHistory()));
     }
 
     // display user order history
-    @GetMapping("/display-user-order-history")
-    public ResponseEntity<?> displayUserOrderHistory(String userID) {
+    @GetMapping("/display-user-order-history/{userID}")
+    public ResponseEntity<?> displayUserOrderHistory(@PathVariable String userID) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.displayUserOrderHistory(userID));
     }
 
