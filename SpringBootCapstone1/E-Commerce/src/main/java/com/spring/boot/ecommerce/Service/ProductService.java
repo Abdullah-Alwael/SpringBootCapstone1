@@ -82,11 +82,12 @@ public class ProductService {
         // sort based on max time of purchase
         for (int i = 0; i < bestSellers.size(); i++) {
             for (int j = i + 1; j < bestSellers.size() - 1; j++) {
-                if (bestSellers.get(j).getTimesPurchased()
-                        > bestSellers.get(i).getTimesPurchased()) {
+                if (bestSellers.get(j).getTimesPurchased() > bestSellers.get(i).getTimesPurchased()) {
+
                     swap = bestSellers.get(i);
                     bestSellers.set(i, bestSellers.get(j));
                     bestSellers.set(j, swap);
+
                 }
             }
         }
@@ -109,33 +110,60 @@ public class ProductService {
 
         for (Product p : products) {
             if (p.getId().equals(productID)) {
+
                 p.setScore(newScore);
                 return true; // score updated
+
             }
         }
 
         return false; // product was not found
     }
 
-//    , and display advertisements based on highest score set by admin
-
-    public ArrayList<Product> displayAdvertisement(){
-        ArrayList<Product> bestScore = new ArrayList<>(products);
-
+    // display advertisements based on highest score set by admin
+    // helper sort method:
+    public void sortByScore(ArrayList<Product> products) {
         Product swap;
 
-        // sort based on advertisement score
-        for (int i = 0; i < bestScore.size(); i++) {
-            for (int j = i + 1; j < bestScore.size() - 1; j++) {
-                if (bestScore.get(j).getScore()
-                        > bestScore.get(i).getScore()) {
-                    swap = bestScore.get(i);
-                    bestScore.set(i, bestScore.get(j));
-                    bestScore.set(j, swap);
+        // sort based on score
+        for (int i = 0; i < products.size(); i++) {
+            for (int j = i + 1; j < products.size() - 1; j++) {
+                if (products.get(j).getScore() > products.get(i).getScore()) {
+
+                    swap = products.get(i);
+                    products.set(i, products.get(j));
+                    products.set(j, swap);
+
                 }
             }
         }
+    }
+
+    public ArrayList<Product> displayAdvertisement() {
+        ArrayList<Product> bestScore = new ArrayList<>(products);
+
+        // sort all products based on advertisement score
+        sortByScore(bestScore);
 
         return bestScore;
+    }
+
+    // Display Similar products suggestions based on category and sort by score
+
+    public ArrayList<Product> displaySimilarProducts(String productID) {
+        ArrayList<Product> similarProducts = new ArrayList<>();
+
+        Product similarTo = getProduct(productID); // the product we are comparing to
+
+        for (Product p : products) { // add all products with the same category
+            if (p.getCategoryID().equals(similarTo.getCategoryID())) {
+                similarProducts.add(p);
+            }
+        }
+
+        // sort similar products by score:
+        sortByScore(similarProducts);
+
+        return similarProducts;
     }
 }

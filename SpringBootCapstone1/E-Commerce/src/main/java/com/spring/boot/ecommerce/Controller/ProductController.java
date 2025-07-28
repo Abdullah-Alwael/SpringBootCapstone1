@@ -87,4 +87,10 @@ public class ProductController {
     public ResponseEntity<?> displayAdvertisement(){
         return ResponseEntity.status(HttpStatus.OK).body(productService.displayAdvertisement());
     }
+
+    @GetMapping("/similar-products/{productID}")
+    public ResponseEntity<?> displaySimilarProducts(@PathVariable String productID){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.displaySimilarProducts(productID));
+    }
+
 }
