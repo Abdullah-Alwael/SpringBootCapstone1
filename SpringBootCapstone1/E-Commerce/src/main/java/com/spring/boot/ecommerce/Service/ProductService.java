@@ -1,17 +1,24 @@
 package com.spring.boot.ecommerce.Service;
 
 import com.spring.boot.ecommerce.Model.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
     private ArrayList<Product> products = new ArrayList<>();
+    private final CategoryService categoryService;
 
-    public void addProduct(Product product) {
-        products.add(product);
+    public boolean addProduct(Product product) {
+        if (categoryService.checkAvailableCategory(product.getCategoryID())) {
+            products.add(product);
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<Product> getProducts() {

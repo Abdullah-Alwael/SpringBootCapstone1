@@ -19,14 +19,16 @@ public class ProductController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(@Valid @RequestBody Product product, Errors errors) {
-        // TODO check if categoryID exists in the system through the service
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
                     ApiResponse(errors.getFieldError().getDefaultMessage()));
         }
 
-        productService.addProduct(product);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("product was added Successfully"));
+        if (productService.addProduct(product)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("product was added Successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error category does not exist"));
+        }
     }
 
     @GetMapping("/list")
