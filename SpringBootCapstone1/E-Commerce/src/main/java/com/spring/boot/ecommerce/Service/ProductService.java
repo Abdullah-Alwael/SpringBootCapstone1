@@ -168,10 +168,9 @@ public class ProductService {
     // display user order history
     public ArrayList<Product> displayUserOrderHistory(String userID) {
 
-        ArrayList<Product> orderHistoryList = new ArrayList<>();
+        ArrayList<Product> orderHistoryList = new ArrayList<>(); // [] empty list
 
-        if (userService.checkAvailableUser(userID)) { // if user exists, generate a list of the orders
-
+        if (userService.checkAvailableUser(userID)) { // if user exists, generate a list of user orders
             String orderHistory = userService.getUser(userID).getOrderHistory();
 
             // i.e. 100_2025-07-28, 200_2025-05-22 , . . .
@@ -181,7 +180,7 @@ public class ProductService {
                 String productID = order.split("_")[0]; // 100 which is the productID
 
                 if (checkAvailableProduct(productID)) { // to prevent null pointer exception
-                    orderHistoryList.add(getProduct(productID));
+                    orderHistoryList.add(getProduct(productID)); // getProduct can return null
                 }
             }
         }

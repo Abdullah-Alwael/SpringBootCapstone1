@@ -102,16 +102,16 @@ public class ProductController {
     // return order history string to enable front-end filtering of the next end point
     @GetMapping("/user-order-history/{userID}")
     public ResponseEntity<?> getUserOrderHistory(@PathVariable String userID) {
-        if (!userService.checkAvailableUser(userID)) {
+        if (!userService.checkAvailableUser(userID)) { // user can be null, so prevent it with a check
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
                     ApiResponse("Error the user does not exist"));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(new
-                ApiResponse(userService.getUser(userID).getOrderHistory()));
+                ApiResponse(userService.getUser(userID).getOrderHistory())); // return the string
     }
 
-    // display user order history
+    // display user order history list or products
     @GetMapping("/display-user-order-history/{userID}")
     public ResponseEntity<?> displayUserOrderHistory(@PathVariable String userID) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.displayUserOrderHistory(userID));
