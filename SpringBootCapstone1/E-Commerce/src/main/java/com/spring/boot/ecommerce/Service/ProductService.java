@@ -11,7 +11,11 @@ import java.util.ArrayList;
 public class ProductService {
 
     private ArrayList<Product> products = new ArrayList<>();
+
     private final CategoryService categoryService;
+    private final UserService userService;
+    private final MerchantService merchantService;
+    private final MerchantStockService merchantStockService;
 
     public boolean addProduct(Product product) {
         if (categoryService.checkAvailableCategory(product.getCategoryID())) {
@@ -26,7 +30,7 @@ public class ProductService {
     }
 
     public boolean updateProduct(String productID, Product product) {
-        if (!categoryService.checkAvailableCategory(product.getCategoryID())){
+        if (!categoryService.checkAvailableCategory(product.getCategoryID())) {
             return false; // return false if the new category id does not exist
         }
         for (Product p : products) {
@@ -60,5 +64,31 @@ public class ProductService {
         return false;
     }
 
+    public double getProductPrice(String productID) {
+        for (Product p : products) {
+            if (p.getId().equals(productID)) {
+                return p.getPrice();
+            }
+        }
+
+        return 0; // does not exist
+    }
+
+    public boolean buyProduct(String userID, String productID, String merchantID) {
+        if (!userService.checkAvailableUser(userID)
+                || !checkAvailableProduct(productID)
+                || !merchantService.checkAvailableMerchant(merchantID)) {
+            return false; // one or all IDs do not exist
+        }
+
+        if (userService.canPay(userID, getProductPrice(productID))
+                && merchantStockService.StockAvailable(productID, merchantID, 1)) {
+
+            return merchantStockService.removeStockFromProduct(productID, merchantID, 1)
+                    && userService.pay(userID, getProductPrice(productID));
+        } else {
+            return false;
+        }
+    }
 
 }
