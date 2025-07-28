@@ -2,7 +2,6 @@ package com.spring.boot.ecommerce.Controller;
 
 import com.spring.boot.ecommerce.Api.ApiResponse;
 import com.spring.boot.ecommerce.Model.Product;
-import com.spring.boot.ecommerce.Model.User;
 import com.spring.boot.ecommerce.Service.ProductService;
 import com.spring.boot.ecommerce.Service.UserService;
 import jakarta.validation.Valid;
@@ -96,6 +95,10 @@ public class ProductController {
     // get similar products by category to display in the product view page sorted by score
     @GetMapping("/similar-products/{productID}")
     public ResponseEntity<?> displaySimilarProducts(@PathVariable String productID) {
+        if (!productService.checkAvailableProduct(productID)) { // product can be null, so prevent it with a check
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
+                    ApiResponse("Error the product does not exist"));
+        }
         return ResponseEntity.status(HttpStatus.OK).body(productService.displaySimilarProducts(productID));
     }
 
@@ -114,8 +117,23 @@ public class ProductController {
     // display user order history list or products
     @GetMapping("/display-user-order-history/{userID}")
     public ResponseEntity<?> displayUserOrderHistory(@PathVariable String userID) {
+        if (!userService.checkAvailableUser(userID)) { // user can be null, so prevent it with a check
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
+                    ApiResponse("Error the user does not exist"));
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(productService.displayUserOrderHistory(userID));
     }
 
+    // figure out user's favorite category
+    @GetMapping("/user-favorite/{userID}")
+    public ResponseEntity<?> getUserFavoriteCategory(@PathVariable String userID){
+        if (!userService.checkAvailableUser(userID)) { // user can be null, so prevent it with a check
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
+                    ApiResponse("Error the user does not exist"));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse(productService.favoriteUserCategory(userID)));
+    }
 
 }

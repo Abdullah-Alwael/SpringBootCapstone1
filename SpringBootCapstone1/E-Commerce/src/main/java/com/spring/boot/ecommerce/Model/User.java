@@ -34,4 +34,5 @@ public class User {
 
     // TODO Extra variables:
     private String orderHistory;
+    private String favoriteCategory;
 }

@@ -1,5 +1,6 @@
 package com.spring.boot.ecommerce.Service;
 
+import com.spring.boot.ecommerce.Model.Category;
 import com.spring.boot.ecommerce.Model.Product;
 import com.spring.boot.ecommerce.Model.User;
 import lombok.RequiredArgsConstructor;
@@ -151,7 +152,7 @@ public class ProductService {
     public ArrayList<Product> displaySimilarProducts(String productID) {
         ArrayList<Product> similarProducts = new ArrayList<>();
 
-        Product similarTo = getProduct(productID); // the product we are comparing to
+        Product similarTo = getProduct(productID); // the product we are comparing to, can be null
 
         for (Product p : products) { // add all products with the same category
             if (p.getCategoryID().equals(similarTo.getCategoryID())) {
@@ -165,27 +166,59 @@ public class ProductService {
         return similarProducts;
     }
 
-    // display user order history
+    // display user order history list
     public ArrayList<Product> displayUserOrderHistory(String userID) {
 
         ArrayList<Product> orderHistoryList = new ArrayList<>(); // [] empty list
 
-        if (userService.checkAvailableUser(userID)) { // if user exists, generate a list of user orders
-            String orderHistory = userService.getUser(userID).getOrderHistory();
+        String orderHistory = userService.getUser(userID).getOrderHistory();
 
-            // i.e. 100_2025-07-28, 200_2025-05-22 , . . .
-            String[] orderIDsWithDates = orderHistory.split(","); // [0] = 100_2025-07-28
+        // i.e. 100_2025-07-28, 200_2025-05-22 , . . .
+        String[] orderIDsWithDates = orderHistory.split(","); // [0] = 100_2025-07-28
 
-            for (String order : orderIDsWithDates) { // 100_2025-07-28
-                String productID = order.split("_")[0]; // 100 which is the productID
+        for (String order : orderIDsWithDates) { // 100_2025-07-28
+            String productID = order.split("_")[0]; // 100 which is the productID
 
-                if (checkAvailableProduct(productID)) { // to prevent null pointer exception
-                    orderHistoryList.add(getProduct(productID)); // getProduct can return null
-                }
+            if (checkAvailableProduct(productID)) { // to prevent null pointer exception
+                orderHistoryList.add(getProduct(productID)); // getProduct can return null
             }
         }
 
-
         return orderHistoryList; // or else return an empty list if user/product do not exist
+    }
+
+    // figure out user's favorite category
+    public String favoriteUserCategory(String userID) {
+        String favoriteCategory = ""; // initially nothing
+
+        ArrayList<Product> userOrderHistory = displayUserOrderHistory(userID); // get user orders
+        ArrayList<String> userCategories = new ArrayList<>(); // generate user categories
+
+        for (Product p : userOrderHistory) {
+            if (categoryService.checkAvailableCategory(p.getCategoryID())) { // if category exists, add it
+                userCategories.add(categoryService.getCategory(p.getCategoryID()).getName());
+            }
+        }
+
+        // check the most repeated category
+        int currentCount;
+        int maxCount = 0;
+
+        for (String currentCategory : userCategories) {
+            currentCount = 0;
+            for (String counterCategory : userCategories) { // count how many times this category occurs
+                if (currentCategory.equals(counterCategory)) {
+                    currentCount++;
+                }
+            }
+
+            if (currentCount > maxCount) {
+                maxCount = currentCount;
+                favoriteCategory = currentCategory;
+            }
+        }
+
+        return favoriteCategory;
+
     }
 }
