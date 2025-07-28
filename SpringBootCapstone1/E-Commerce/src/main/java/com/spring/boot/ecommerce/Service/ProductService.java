@@ -1,6 +1,5 @@
 package com.spring.boot.ecommerce.Service;
 
-import com.spring.boot.ecommerce.Model.Category;
 import com.spring.boot.ecommerce.Model.Product;
 import com.spring.boot.ecommerce.Model.User;
 import lombok.RequiredArgsConstructor;

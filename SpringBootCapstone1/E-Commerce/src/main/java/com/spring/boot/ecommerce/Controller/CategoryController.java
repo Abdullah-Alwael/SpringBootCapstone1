@@ -4,7 +4,6 @@ import com.spring.boot.ecommerce.Api.ApiResponse;
 import com.spring.boot.ecommerce.Model.Category;
 import com.spring.boot.ecommerce.Service.CategoryService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class CategoryController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> getCategorys() {
+    public ResponseEntity<?> getCategories() {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.getCategories());
     }
 
