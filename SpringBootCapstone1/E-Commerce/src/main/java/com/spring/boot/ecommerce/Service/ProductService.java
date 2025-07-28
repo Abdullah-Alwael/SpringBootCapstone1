@@ -1,6 +1,7 @@
 package com.spring.boot.ecommerce.Service;
 
 import com.spring.boot.ecommerce.Model.Product;
+import com.spring.boot.ecommerce.Model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ public class ProductService {
     private ArrayList<Product> products = new ArrayList<>();
 
     private final CategoryService categoryService;
+    private final UserService userService;
 
     public boolean addProduct(Product product) {
         if (categoryService.checkAvailableCategory(product.getCategoryID())) {
@@ -71,7 +73,7 @@ public class ProductService {
         return null; // does not exist
     }
 
-    // TODO Extra method:
+    // TODO Extra methods:
     public ArrayList<Product> listBestSellingProducts() {
         ArrayList<Product> bestSellers = new ArrayList<>(products);
 
@@ -90,6 +92,29 @@ public class ProductService {
         }
 
         return bestSellers;
+    }
+
+    // update the score by admin, and display advertisements
+
+    public boolean updateProductScore(String userID, String productID, double newScore){
+        User user = userService.getUser(userID);
+
+        if (user == null){
+            return false; // user does not exist
+        }
+
+        if (!user.getRole().equals("Admin")){
+            return false; // only admin can add scores for advertisement purposes
+        }
+
+        for(Product p : products){
+            if (p.getId().equals(productID)){
+                p.setScore(newScore);
+                return true; // score updated
+            }
+        }
+
+        return false; // product was not found
     }
 
 }

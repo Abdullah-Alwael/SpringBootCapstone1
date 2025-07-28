@@ -18,6 +18,16 @@ public class UserService {
         return users;
     }
 
+    public User getUser(String userID) {
+        for (User u : users) {
+            if (u.getId().equals(userID)) {
+                return u;
+            }
+        }
+
+        return null;
+    }
+
     public boolean updateUser(String userID, User user) {
         for (User u : users) {
             if (u.getId().equals(userID)) {

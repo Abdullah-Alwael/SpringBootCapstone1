@@ -25,6 +25,7 @@ public class Product {
     @NotEmpty(message = "categoryID must not be empty")
     private String categoryID; // from the category class
 
-    // TODO Extra user variable:
+    // TODO Extra product variables:
     private int timesPurchased; // how many times the product was purchased
+    private double score; // used by admin for advertisements
 }

@@ -60,10 +60,24 @@ public class ProductController {
         }
     }
 
-    // TODO Extra end point:
+    // TODO Extra end points:
     @GetMapping("/best-selling")
     public ResponseEntity<?> listBestSellingProducts(){
         return ResponseEntity.status(HttpStatus.OK).body(productService.listBestSellingProducts());
     }
 
+    @PutMapping("/score/{userID}/{productID}/{newScore}")
+    public ResponseEntity<?> updateProductScore(@PathVariable String userID,
+                                                @PathVariable String productID,
+                                                @PathVariable double newScore){
+
+        if (productService.updateProductScore(userID, productID, newScore)){
+            return ResponseEntity.status(HttpStatus.OK).body(new
+                    ApiResponse("Advertisement score was updated successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
+                    ApiResponse("Error, either user is not an Admin or the product and/or user do not exist"));
+        }
+
+    }
 }
