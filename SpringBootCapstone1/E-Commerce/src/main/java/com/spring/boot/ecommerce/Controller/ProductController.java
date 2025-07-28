@@ -73,4 +73,10 @@ public class ProductController {
         }
     }
 
+    // TODO Extra end point:
+    @GetMapping("/best-selling")
+    public ResponseEntity<?> listBestSellingProducts(){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.listBestSellingProducts());
+    }
+
 }

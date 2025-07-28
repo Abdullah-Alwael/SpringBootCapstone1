@@ -64,14 +64,14 @@ public class ProductService {
         return false;
     }
 
-    public double getProductPrice(String productID) {
+    public Product getProduct(String productID) {
         for (Product p : products) {
             if (p.getId().equals(productID)) {
-                return p.getPrice();
+                return p;
             }
         }
 
-        return 0; // does not exist
+        return null; // does not exist
     }
 
     public boolean buyProduct(String userID, String productID, String merchantID) {
@@ -81,14 +81,40 @@ public class ProductService {
             return false; // one or all IDs do not exist
         }
 
-        if (userService.canPay(userID, getProductPrice(productID))
+        Product p = getProduct(productID);
+
+        if (userService.canPay(userID, p.getPrice())
                 && merchantStockService.StockAvailable(productID, merchantID, 1)) {
 
+            // TODO Extra step:
+            p.setTimesPurchased(p.getTimesPurchased() + 1); // count how many times a product was purchased
+
             return merchantStockService.removeStockFromProduct(productID, merchantID, 1)
-                    && userService.pay(userID, getProductPrice(productID));
+                    && userService.pay(userID, p.getPrice());
         } else {
             return false;
         }
+    }
+
+    // TODO Extra method:
+    public ArrayList<Product> listBestSellingProducts() {
+        ArrayList<Product> bestSellers = new ArrayList<>(products);
+
+        Product swap;
+
+        // sort based on max time of purchase
+        for (int i = 0; i < bestSellers.size(); i++) {
+            for (int j = i+1; j < bestSellers.size()-1; j++) {
+                if (bestSellers.get(j).getTimesPurchased()
+                        > bestSellers.get(i).getTimesPurchased()){
+                    swap = bestSellers.get(i);
+                    bestSellers.set(i,bestSellers.get(j));
+                    bestSellers.set(j,swap);
+                }
+            }
+        }
+
+        return bestSellers;
     }
 
 }
