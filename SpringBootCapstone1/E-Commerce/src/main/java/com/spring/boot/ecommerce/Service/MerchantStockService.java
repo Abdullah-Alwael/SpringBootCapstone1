@@ -1,6 +1,7 @@
 package com.spring.boot.ecommerce.Service;
 
 import com.spring.boot.ecommerce.Model.MerchantStock;
+import com.spring.boot.ecommerce.Model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,10 @@ import java.util.ArrayList;
 public class MerchantStockService {
 
     private ArrayList<MerchantStock> merchantStocks = new ArrayList<>();
+
     private final ProductService productService;
     private final MerchantService merchantService;
+    private final UserService userService;
 
     public boolean addMerchantStock(MerchantStock merchantStock) {
         if (productService.checkAvailableProduct(merchantStock.getProductID())
@@ -103,6 +106,29 @@ public class MerchantStockService {
             }
         }
         return false; // the merchantStock does not exist
+    }
+
+
+    public boolean buyProduct(String userID, String productID, String merchantID) {
+        if (!userService.checkAvailableUser(userID)
+                || !productService.checkAvailableProduct(productID)
+                || !merchantService.checkAvailableMerchant(merchantID)) {
+            return false; // one or all IDs do not exist
+        }
+
+        Product p = productService.getProduct(productID);
+
+        if (userService.canPay(userID, p.getPrice())
+                && StockAvailable(productID, merchantID, 1)) {
+
+            // TODO Extra step:
+            p.setTimesPurchased(p.getTimesPurchased() + 1); // count how many times a product was purchased
+
+            return removeStockFromProduct(productID, merchantID, 1)
+                    && userService.pay(userID, p.getPrice());
+        } else {
+            return false;
+        }
     }
 
 }

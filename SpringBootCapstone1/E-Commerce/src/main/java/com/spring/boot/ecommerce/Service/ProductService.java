@@ -13,9 +13,6 @@ public class ProductService {
     private ArrayList<Product> products = new ArrayList<>();
 
     private final CategoryService categoryService;
-    private final UserService userService;
-    private final MerchantService merchantService;
-    private final MerchantStockService merchantStockService;
 
     public boolean addProduct(Product product) {
         if (categoryService.checkAvailableCategory(product.getCategoryID())) {
@@ -72,28 +69,6 @@ public class ProductService {
         }
 
         return null; // does not exist
-    }
-
-    public boolean buyProduct(String userID, String productID, String merchantID) {
-        if (!userService.checkAvailableUser(userID)
-                || !checkAvailableProduct(productID)
-                || !merchantService.checkAvailableMerchant(merchantID)) {
-            return false; // one or all IDs do not exist
-        }
-
-        Product p = getProduct(productID);
-
-        if (userService.canPay(userID, p.getPrice())
-                && merchantStockService.StockAvailable(productID, merchantID, 1)) {
-
-            // TODO Extra step:
-            p.setTimesPurchased(p.getTimesPurchased() + 1); // count how many times a product was purchased
-
-            return merchantStockService.removeStockFromProduct(productID, merchantID, 1)
-                    && userService.pay(userID, p.getPrice());
-        } else {
-            return false;
-        }
     }
 
     // TODO Extra method:

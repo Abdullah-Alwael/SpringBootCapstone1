@@ -60,19 +60,6 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/buy/{userID}/{productID}/{merchantID}")
-    public ResponseEntity<?> buyProduct(@PathVariable String userID,
-                                        @PathVariable String productID,
-                                        @PathVariable String merchantID){
-        if (productService.buyProduct(userID,productID,merchantID)){
-            return ResponseEntity.status(HttpStatus.OK).body(new
-                    ApiResponse("Purchase success,Thank you for buying with us"));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
-                    ApiResponse("Error, either the stock is unavailable, or check your IDs and/or your balance"));
-        }
-    }
-
     // TODO Extra end point:
     @GetMapping("/best-selling")
     public ResponseEntity<?> listBestSellingProducts(){
