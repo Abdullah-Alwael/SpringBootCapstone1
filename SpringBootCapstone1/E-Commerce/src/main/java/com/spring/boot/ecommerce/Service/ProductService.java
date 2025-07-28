@@ -81,12 +81,12 @@ public class ProductService {
 
         // sort based on max time of purchase
         for (int i = 0; i < bestSellers.size(); i++) {
-            for (int j = i+1; j < bestSellers.size()-1; j++) {
+            for (int j = i + 1; j < bestSellers.size() - 1; j++) {
                 if (bestSellers.get(j).getTimesPurchased()
-                        > bestSellers.get(i).getTimesPurchased()){
+                        > bestSellers.get(i).getTimesPurchased()) {
                     swap = bestSellers.get(i);
-                    bestSellers.set(i,bestSellers.get(j));
-                    bestSellers.set(j,swap);
+                    bestSellers.set(i, bestSellers.get(j));
+                    bestSellers.set(j, swap);
                 }
             }
         }
@@ -94,21 +94,21 @@ public class ProductService {
         return bestSellers;
     }
 
-    // update the score by admin, and display advertisements
+    // update the score by admin
 
-    public boolean updateProductScore(String userID, String productID, double newScore){
+    public boolean updateProductScore(String userID, String productID, double newScore) {
         User user = userService.getUser(userID);
 
-        if (user == null){
+        if (user == null) {
             return false; // user does not exist
         }
 
-        if (!user.getRole().equals("Admin")){
+        if (!user.getRole().equals("Admin")) {
             return false; // only admin can add scores for advertisement purposes
         }
 
-        for(Product p : products){
-            if (p.getId().equals(productID)){
+        for (Product p : products) {
+            if (p.getId().equals(productID)) {
                 p.setScore(newScore);
                 return true; // score updated
             }
@@ -117,4 +117,25 @@ public class ProductService {
         return false; // product was not found
     }
 
+//    , and display advertisements based on highest score set by admin
+
+    public ArrayList<Product> displayAdvertisement(){
+        ArrayList<Product> bestScore = new ArrayList<>(products);
+
+        Product swap;
+
+        // sort based on advertisement score
+        for (int i = 0; i < bestScore.size(); i++) {
+            for (int j = i + 1; j < bestScore.size() - 1; j++) {
+                if (bestScore.get(j).getScore()
+                        > bestScore.get(i).getScore()) {
+                    swap = bestScore.get(i);
+                    bestScore.set(i, bestScore.get(j));
+                    bestScore.set(j, swap);
+                }
+            }
+        }
+
+        return bestScore;
+    }
 }

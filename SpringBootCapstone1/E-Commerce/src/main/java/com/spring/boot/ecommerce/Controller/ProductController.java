@@ -61,11 +61,13 @@ public class ProductController {
     }
 
     // TODO Extra end points:
+    // based on the number of purchase, display a list of best selling items
     @GetMapping("/best-selling")
     public ResponseEntity<?> listBestSellingProducts(){
         return ResponseEntity.status(HttpStatus.OK).body(productService.listBestSellingProducts());
     }
 
+    // for advertisement purposes, add a score value to product
     @PutMapping("/score/{userID}/{productID}/{newScore}")
     public ResponseEntity<?> updateProductScore(@PathVariable String userID,
                                                 @PathVariable String productID,
@@ -79,5 +81,10 @@ public class ProductController {
                     ApiResponse("Error, either user is not an Admin or the product and/or user do not exist"));
         }
 
+    }
+
+    @GetMapping("/advertisement")
+    public ResponseEntity<?> displayAdvertisement(){
+        return ResponseEntity.status(HttpStatus.OK).body(productService.displayAdvertisement());
     }
 }
