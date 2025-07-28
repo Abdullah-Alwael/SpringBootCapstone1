@@ -83,11 +83,13 @@ public class ProductController {
 
     }
 
+    // display advertisements based on the Admin set scores. display generally in the website
     @GetMapping("/advertisement")
     public ResponseEntity<?> displayAdvertisement(){
         return ResponseEntity.status(HttpStatus.OK).body(productService.displayAdvertisement());
     }
 
+    // get similar products by category to display in the product view page sorted by score
     @GetMapping("/similar-products/{productID}")
     public ResponseEntity<?> displaySimilarProducts(@PathVariable String productID){
         return ResponseEntity.status(HttpStatus.OK).body(productService.displaySimilarProducts(productID));
