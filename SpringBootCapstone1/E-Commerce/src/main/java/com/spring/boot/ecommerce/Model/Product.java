@@ -24,4 +24,5 @@ public class Product {
 
     @NotEmpty(message = "categoryID must not be empty")
     private String categoryID; // from the category class
+
 }

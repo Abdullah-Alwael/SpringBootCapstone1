@@ -40,4 +40,15 @@ public class ProductService {
         return false;
     }
 
+    public boolean checkAvailableProduct(String productID) {
+        for (Product p : products) {
+            if (p.getId().equals(productID)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 }

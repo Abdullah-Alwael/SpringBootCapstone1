@@ -11,7 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/merchantStock/")
+@RequestMapping("/api/v1/merchant-stock/")
 @RequiredArgsConstructor
 public class MerchantStockController {
 

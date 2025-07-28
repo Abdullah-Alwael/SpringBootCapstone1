@@ -39,5 +39,14 @@ public class MerchantService {
 
         return false;
     }
-    
+
+    public boolean checkAvailableMerchant(String merchantID) {
+        for (Merchant m : merchants) {
+            if (m.getId().equals(merchantID)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

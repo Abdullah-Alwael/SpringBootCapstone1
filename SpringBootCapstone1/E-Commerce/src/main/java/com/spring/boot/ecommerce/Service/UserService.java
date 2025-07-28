@@ -39,5 +39,15 @@ public class UserService {
 
         return false;
     }
+
+    public boolean checkAvailableUser(String userID) {
+        for (User u : users) {
+            if (u.getId().equals(userID)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
 }

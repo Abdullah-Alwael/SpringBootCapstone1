@@ -19,6 +19,7 @@ public class ProductController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(@Valid @RequestBody Product product, Errors errors) {
+        // TODO check if categoryID exists in the system through the service
         if (errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
                     ApiResponse(errors.getFieldError().getDefaultMessage()));

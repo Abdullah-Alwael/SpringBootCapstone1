@@ -39,5 +39,15 @@ public class CategoryService {
 
         return false;
     }
-    
+
+
+    public boolean checkAvailableCategory(String categoryID) {
+        for (Category c : categories) {
+            if (c.getId().equals(categoryID)) {
+                return true; // exists
+            }
+        }
+
+        return false; // does not exist
+    }
 }

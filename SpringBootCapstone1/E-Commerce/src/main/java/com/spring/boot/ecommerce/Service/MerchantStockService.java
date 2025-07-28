@@ -40,4 +40,14 @@ public class MerchantStockService {
         return false;
     }
 
+    public boolean checkAvailableMerchantStock(String merchantStockID) {
+        for (MerchantStock m : merchantStocks) {
+            if (m.getId().equals(merchantStockID)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
