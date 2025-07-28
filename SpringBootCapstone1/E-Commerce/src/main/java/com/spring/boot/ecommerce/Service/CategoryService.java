@@ -18,6 +18,16 @@ public class CategoryService {
         return categories;
     }
 
+    public Category getCategory(String categoryID) {
+        for (Category c : categories) {
+            if (c.getId().equals(categoryID)) {
+                return c;
+            }
+        }
+
+        return null; // does not exist
+    }
+
     public boolean updateCategory(String categoryID, Category category) {
         for (Category c : categories) {
             if (c.getId().equals(categoryID)) {
@@ -39,5 +49,15 @@ public class CategoryService {
 
         return false;
     }
-    
+
+
+    public boolean checkAvailableCategory(String categoryID) {
+        for (Category c : categories) {
+            if (c.getId().equals(categoryID)) {
+                return true; // exists
+            }
+        }
+
+        return false; // does not exist
+    }
 }

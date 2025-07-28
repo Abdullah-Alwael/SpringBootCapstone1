@@ -11,7 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/merchantStock/")
+@RequestMapping("/api/v1/merchant-stock/")
 @RequiredArgsConstructor
 public class MerchantStockController {
 
@@ -25,8 +25,12 @@ public class MerchantStockController {
                     ApiResponse(errors.getFieldError().getDefaultMessage()));
         }
 
-        merchantStockService.addMerchantStock(merchantStock);
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("merchantStock was added Successfully"));
+        if (merchantStockService.addMerchantStock(merchantStock)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("merchantStock was added Successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
+                    ApiResponse("Error, either productID, MerchantID, or both do not exist"));
+        }
     }
 
     @GetMapping("/list")
@@ -44,7 +48,8 @@ public class MerchantStockController {
         if (merchantStockService.updateMerchantStock(merchantStockID, merchantStock)) {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("merchantStock updated Successfully"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error, not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
+                    ApiResponse("Error, some or all of merchantStockID, productID, MerchantID are not found"));
         }
     }
 
@@ -54,6 +59,38 @@ public class MerchantStockController {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("merchantStock deleted Successfully"));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Error, not found"));
+        }
+    }
+
+    @PutMapping("/add-more-stock/{productID}/{merchantID}/{additionalStockAmount}")
+    public ResponseEntity<?> addMoreStockToProduct(@PathVariable String productID, @PathVariable String merchantID,
+                                                   @PathVariable int additionalStockAmount) {
+
+        if (additionalStockAmount<=0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
+                    ApiResponse("Error additionalStockAmount can not be negative or zero"));
+        }
+
+        if (merchantStockService.addMoreStockToProduct(productID, merchantID, additionalStockAmount)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new
+                    ApiResponse("merchantStock increased by "+additionalStockAmount+"Successfully"));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new
+                    ApiResponse("Error, one or all of productID merchantID were not found"));
+        }
+
+    }
+
+    @PutMapping("/buy/{userID}/{productID}/{merchantID}")
+    public ResponseEntity<?> buyProduct(@PathVariable String userID,
+                                        @PathVariable String productID,
+                                        @PathVariable String merchantID){
+        if (merchantStockService.buyProduct(userID,productID,merchantID)){
+            return ResponseEntity.status(HttpStatus.OK).body(new
+                    ApiResponse("Purchase success,Thank you for buying with us"));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new
+                    ApiResponse("Error, either the stock is unavailable, or check your IDs and/or your balance"));
         }
     }
 }

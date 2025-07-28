@@ -14,4 +14,5 @@ public class Category {
     @NotEmpty(message = "name must not be empty")
     @Size(min = 4, message = "name must not be less than 4 characters")
     private String name;
+
 }
