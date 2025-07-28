@@ -1,5 +1,6 @@
 package com.spring.boot.ecommerce.Service;
 
+import com.spring.boot.ecommerce.Model.Product;
 import com.spring.boot.ecommerce.Model.User;
 import org.springframework.stereotype.Service;
 

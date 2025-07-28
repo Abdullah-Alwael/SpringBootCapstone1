@@ -96,7 +96,6 @@ public class ProductService {
     }
 
     // update the score by admin
-
     public boolean updateProductScore(String userID, String productID, double newScore) {
         User user = userService.getUser(userID);
 
@@ -120,7 +119,6 @@ public class ProductService {
         return false; // product was not found
     }
 
-    // display advertisements based on highest score set by admin
     // helper sort method:
     public void sortByScore(ArrayList<Product> products) {
         Product swap;
@@ -139,6 +137,7 @@ public class ProductService {
         }
     }
 
+    // display advertisements based on highest score set by admin
     public ArrayList<Product> displayAdvertisement() {
         ArrayList<Product> bestScore = new ArrayList<>(products);
 
@@ -149,7 +148,6 @@ public class ProductService {
     }
 
     // Display Similar products suggestions based on category and sort by score
-
     public ArrayList<Product> displaySimilarProducts(String productID) {
         ArrayList<Product> similarProducts = new ArrayList<>();
 
@@ -165,5 +163,20 @@ public class ProductService {
         sortByScore(similarProducts);
 
         return similarProducts;
+    }
+
+    // display user order history
+    public ArrayList<Product> displayUserOrderHistory(String userID) {
+        String orderHistory = userService.getUser(userID).getOrderHistory();
+        ArrayList<Product> orderHistoryList = new ArrayList<>();
+
+        // i.e. 100_2025-07-28, 200_2025-05-22 , . . .
+        String[] orderIDsWithDates = orderHistory.split(","); // [0] = 100_2025-07-28
+
+        for (String order : orderIDsWithDates) { // 100_2025-07-28
+            orderHistoryList.add(getProduct(order.split("_")[0])); // 100 which is the productID
+        }
+
+        return orderHistoryList;
     }
 }

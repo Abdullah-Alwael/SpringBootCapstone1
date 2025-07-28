@@ -32,5 +32,6 @@ public class User {
     @Positive(message = "balance must be a positive number")
     private double balance;
 
-
+    // TODO Extra variables:
+    private String orderHistory;
 }

@@ -2,9 +2,11 @@ package com.spring.boot.ecommerce.Service;
 
 import com.spring.boot.ecommerce.Model.MerchantStock;
 import com.spring.boot.ecommerce.Model.Product;
+import com.spring.boot.ecommerce.Model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
@@ -117,12 +119,16 @@ public class MerchantStockService {
         }
 
         Product p = productService.getProduct(productID);
+        User u = userService.getUser(userID);
 
         if (userService.canPay(userID, p.getPrice())
                 && StockAvailable(productID, merchantID, 1)) {
 
-            // TODO Extra step:
-            p.setTimesPurchased(p.getTimesPurchased() + 1); // count how many times a product was purchased
+            // TODO Extra steps:
+            // count how many times a product was purchased
+            p.setTimesPurchased(p.getTimesPurchased() + 1);
+            // store user purchase history in the format ("productID_Date,") i.e. ("100_2025-07-28,")
+            u.setOrderHistory(u.getOrderHistory().concat(productID+"_"+ LocalDate.now()+","));
 
             return removeStockFromProduct(productID, merchantID, 1)
                     && userService.pay(userID, p.getPrice());

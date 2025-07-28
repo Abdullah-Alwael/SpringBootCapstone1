@@ -3,6 +3,7 @@ package com.spring.boot.ecommerce.Controller;
 import com.spring.boot.ecommerce.Api.ApiResponse;
 import com.spring.boot.ecommerce.Model.Product;
 import com.spring.boot.ecommerce.Service.ProductService;
+import com.spring.boot.ecommerce.Service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     private final ProductService productService; // no need to use the new word, Spring handles it in the container
+    private final UserService userService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(@Valid @RequestBody Product product, Errors errors) {
@@ -61,9 +63,10 @@ public class ProductController {
     }
 
     // TODO Extra end points:
-    // based on the number of purchase, display a list of best selling items
+
+    // based on the number of purchase, display a list of best-selling items
     @GetMapping("/best-selling")
-    public ResponseEntity<?> listBestSellingProducts(){
+    public ResponseEntity<?> listBestSellingProducts() {
         return ResponseEntity.status(HttpStatus.OK).body(productService.listBestSellingProducts());
     }
 
@@ -71,9 +74,9 @@ public class ProductController {
     @PutMapping("/score/{userID}/{productID}/{newScore}")
     public ResponseEntity<?> updateProductScore(@PathVariable String userID,
                                                 @PathVariable String productID,
-                                                @PathVariable double newScore){
+                                                @PathVariable double newScore) {
 
-        if (productService.updateProductScore(userID, productID, newScore)){
+        if (productService.updateProductScore(userID, productID, newScore)) {
             return ResponseEntity.status(HttpStatus.OK).body(new
                     ApiResponse("Advertisement score was updated successfully"));
         } else {
@@ -85,14 +88,28 @@ public class ProductController {
 
     // display advertisements based on the Admin set scores. display generally in the website
     @GetMapping("/advertisement")
-    public ResponseEntity<?> displayAdvertisement(){
+    public ResponseEntity<?> displayAdvertisement() {
         return ResponseEntity.status(HttpStatus.OK).body(productService.displayAdvertisement());
     }
 
     // get similar products by category to display in the product view page sorted by score
     @GetMapping("/similar-products/{productID}")
-    public ResponseEntity<?> displaySimilarProducts(@PathVariable String productID){
+    public ResponseEntity<?> displaySimilarProducts(@PathVariable String productID) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.displaySimilarProducts(productID));
     }
+
+    // return order history string to enable front-end filtering of the next end point
+    @GetMapping("/user-order-history/{userID}")
+    public ResponseEntity<?> getUserOrderHistory(@PathVariable String userID) {
+        return ResponseEntity.status(HttpStatus.OK).body(new
+                ApiResponse(userService.getUser(userID).getOrderHistory()));
+    }
+
+    // display user order history
+    @GetMapping("/display-user-order-history")
+    public ResponseEntity<?> displayUserOrderHistory(String userID) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.displayUserOrderHistory(userID));
+    }
+
 
 }
