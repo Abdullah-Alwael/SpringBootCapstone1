@@ -173,16 +173,18 @@ public class ProductService {
         String orderHistory = userService.getUser(userID).getOrderHistory();
 
         // i.e. 100_2025-07-28, 200_2025-05-22 , . . .
-        String[] orderIDsWithDates = orderHistory.split(","); // [0] = 100_2025-07-28
+        if (orderHistory != null) {
+            String[] orderIDsWithDates = orderHistory.split(","); // [0] = 100_2025-07-28
 
-        for (String order : orderIDsWithDates) { // 100_2025-07-28
-            String productID = order.split("_")[0]; // 100 which is the productID
 
-            if (checkAvailableProduct(productID)) { // to prevent null pointer exception
-                orderHistoryList.add(getProduct(productID)); // getProduct can return null
+            for (String order : orderIDsWithDates) { // 100_2025-07-28
+                String productID = order.split("_")[0]; // 100 which is the productID
+
+                if (checkAvailableProduct(productID)) { // to prevent null pointer exception
+                    orderHistoryList.add(getProduct(productID)); // getProduct can return null
+                }
             }
         }
-
         return orderHistoryList; // or else return an empty list if user/product do not exist
     }
 
